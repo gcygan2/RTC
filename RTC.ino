@@ -3,6 +3,7 @@
 //#include <DIYables_4Digit7Segment_74HC595.h>
 
 #define ADR_DS1302 0x68
+#define PRZYCISK 7
 
 LiquidCrystal_I2C lcd(0x27,16,2);
 //DIYables_4Digit7Segment_74HC595 display(7, 6, 5);
@@ -44,13 +45,14 @@ void setup()
   Wire.begin(); 
   Serial.begin(9600);
   lcd.init();
+  pinMode(PRZYCISK, INPUT_PULLUP);
+
   //display.printInt(-132, false);
 /*
+    ustaw minuty
     Wire.beginTransmission(ADR_DS1302);
-    Wire.write(0);
-    Wire.write(0);
+    Wire.write(1);
     Wire.write(0x15);
-    Wire.write(0x20);
     Wire.endTransmission();
 */
 }
@@ -60,6 +62,9 @@ void loop()
   //display.loop();
   z.print();
   uint8_t c = z.Sekundy();   
-  Serial.println(c,HEX);
-  delay(1000);
+  if (!digitalRead(PRZYCISK)) {
+    Serial.println(c,HEX);
+    while (!digitalRead(PRZYCISK));
+  }
+  //delay(500);
 }
